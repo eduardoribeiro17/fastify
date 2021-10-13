@@ -5,6 +5,7 @@ import {
   FastifyServerOptions,
 } from 'fastify'
 import { StatusCodes } from 'http-status-codes'
+import { PrismaClient } from '@prisma/client'
 
 export default function (
   fastify: FastifyInstance,
@@ -14,8 +15,12 @@ export default function (
   fastify.route({
     method: 'GET',
     url: '/ping',
-    handler: (request: FastifyRequest, reply: FastifyReply) => {
-      reply.status(StatusCodes.OK).send({ ping: 'pong' })
+    handler: async (request: FastifyRequest, reply: FastifyReply) => {
+      const prisma = new PrismaClient()
+
+      const allUsers = await prisma.user.findFirst()
+      console.log(allUsers)
+      reply.status(StatusCodes.OK).send(allUsers)
     },
   })
 
